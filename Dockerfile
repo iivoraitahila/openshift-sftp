@@ -34,7 +34,6 @@ RUN mkdir -p /home/sftpuser/sftp/upload && \
 
 # Configure SSH for SFTP
 RUN mkdir -p /run/sshd && \
-    echo "Port 2222" >> /etc/ssh/sshd_config && \
     echo "Match User sftpuser" >> /etc/ssh/sshd_config && \
     echo "    ChrootDirectory /home/sftpuser/sftp" >> /etc/ssh/sshd_config && \
     echo "    ForceCommand internal-sftp" >> /etc/ssh/sshd_config && \
@@ -44,10 +43,23 @@ RUN mkdir -p /run/sshd && \
     echo "    AllowAgentForwarding no" >> /etc/ssh/sshd_config && \
     echo "    AllowTcpForwarding no" >> /etc/ssh/sshd_config && \
     echo "    X11Forwarding no" >> /etc/ssh/sshd_config
-    
+
+RUN mkdir /tmp/custom_ssh && \
+    ssh-keygen -f /tmp/custom_ssh/ssh_host_rsa_key -N '' -t rsa && \
+    ssh-keygen -f /tmp/custom_ssh/ssh_host_dsa_key -N '' -t dsa
+
+RUN echo "Port 2222" > /tmp/custom_ssh/sshd_config && \
+    echo "HostKey /tmp/custom_ssh/ssh_host_rsa_key" >> /tmp/custom_ssh/sshd_config && \
+    echo "HostKey /tmp/custom_ssh/ssh_host_dsa_key" >> /tmp/custom_ssh/sshd_config && \
+    echo "AuthorizedKeysFile  .ssh/authorized_keys" >> /tmp/custom_ssh/sshd_config && \
+    echo "ChallengeResponseAuthentication no" >> /tmp/custom_ssh/sshd_config && \
+    echo "UsePAM yes" >> /tmp/custom_ssh/sshd_config && \
+    echo "Subsystem   sftp    /usr/lib/ssh/sftp-server" >> /tmp/custom_ssh/sshd_config && \
+    echo "PidFile /tmp/custom_ssh/sshd.pid" >> /tmp/custom_ssh/sshd_config
 
 # Expose the SSH port
 EXPOSE 2222
 
 # Run SSHD on container start
-CMD ["/usr/sbin/sshd", "-D", "-e"]
+#CMD ["/usr/sbin/sshd", "-D", "-e"]
+CMD ["/usr/sbin/sshd", "-f", "/tmp/custom_ssh/sshd_config"]
