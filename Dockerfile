@@ -46,7 +46,8 @@ RUN mkdir -p /run/sshd && \
 
 
 
-RUN echo "Port 2222" > /tmp/custom_ssh/sshd_config && \
+RUN mkdir /tmp/custom_ssh && chmod 777 /tmp/custom_ssh && \
+    echo "Port 2222" > /tmp/custom_ssh/sshd_config && \
     echo "HostKey /tmp/custom_ssh/ssh_host_rsa_key" >> /tmp/custom_ssh/sshd_config && \
     echo "HostKey /tmp/custom_ssh/ssh_host_dsa_key" >> /tmp/custom_ssh/sshd_config && \
     echo "AuthorizedKeysFile  .ssh/authorized_keys" >> /tmp/custom_ssh/sshd_config && \
