@@ -34,6 +34,7 @@ RUN mkdir -p /home/sftpuser/sftp/upload && \
 
 # Configure SSH for SFTP
 RUN mkdir -p /run/sshd && \
+    echo "Port 2222" >> /etc/ssh/sshd_config && \
     echo "Match User sftpuser" >> /etc/ssh/sshd_config && \
     echo "    ChrootDirectory /home/sftpuser/sftp" >> /etc/ssh/sshd_config && \
     echo "    ForceCommand internal-sftp" >> /etc/ssh/sshd_config && \
@@ -42,8 +43,8 @@ RUN mkdir -p /run/sshd && \
     echo "    PermitTunnel no" >> /etc/ssh/sshd_config && \
     echo "    AllowAgentForwarding no" >> /etc/ssh/sshd_config && \
     echo "    AllowTcpForwarding no" >> /etc/ssh/sshd_config && \
-    echo "    X11Forwarding no" >> /etc/ssh/sshd_config && \
-    echo "    Port 2222" >> /etc/ssh/sshd_config
+    echo "    X11Forwarding no" >> /etc/ssh/sshd_config
+    
 
 # Expose the SSH port
 EXPOSE 2222
