@@ -22,15 +22,15 @@ RUN useradd -m -d /home/sftpuser -s /usr/sbin/nologin sftpuser && \
 COPY docker_rsa.pub /home/sftpuser/.ssh/authorized_keys
 
 # Set permissions for the public key
-RUN chmod 600 /home/sftpuser/.ssh/authorized_keys && \
+RUN chmod 644 /home/sftpuser/.ssh/authorized_keys && \
     chown sftpuser:sftpuser /home/sftpuser/.ssh/authorized_keys
 
 # Create a directory for SFTP that the user will have access to
 RUN mkdir -p /home/sftpuser/sftp/upload && \
     chown root:root /home/sftpuser /home/sftpuser/sftp && \
-    chmod 755 /home/sftpuser /home/sftpuser/sftp && \
+    chmod 766 /home/sftpuser /home/sftpuser/sftp && \
     chown sftpuser:sftpuser /home/sftpuser/sftp/upload && \
-    chmod 755 /home/sftpuser/sftp/upload
+    chmod 766 /home/sftpuser/sftp/upload
 
 # Configure SSH for SFTP
 RUN mkdir -p /run/sshd && \
@@ -54,7 +54,16 @@ RUN mkdir /tmp/custom_ssh && chmod 777 /tmp/custom_ssh && \
     echo "ChallengeResponseAuthentication no" >> /tmp/custom_ssh/sshd_config && \
     echo "UsePAM yes" >> /tmp/custom_ssh/sshd_config && \
     echo "Subsystem   sftp    /usr/lib/ssh/sftp-server" >> /tmp/custom_ssh/sshd_config && \
-    echo "PidFile /tmp/custom_ssh/sshd.pid" >> /tmp/custom_ssh/sshd_config
+    echo "PidFile /tmp/custom_ssh/sshd.pid" >> /tmp/custom_ssh/sshd_config && \
+    echo "Match User sftpuser" >> /tmp/custom_ssh/sshd_config && \
+    echo "    ChrootDirectory /home/sftpuser/sftp" >> /tmp/custom_ssh/sshd_config && \
+    echo "    ForceCommand internal-sftp" >> /tmp/custom_ssh/sshd_config && \
+    echo "    PasswordAuthentication no" >> /tmp/custom_ssh/sshd_config && \
+    echo "    PubkeyAuthentication yes" >> /tmp/custom_ssh/sshd_config && \
+    echo "    PermitTunnel no" >> /tmp/custom_ssh/sshd_config && \
+    echo "    AllowAgentForwarding no" >> /tmp/custom_ssh/sshd_config && \
+    echo "    AllowTcpForwarding no" >> /tmp/custom_ssh/sshd_config && \
+    echo "    X11Forwarding no" >> /tmp/custom_ssh/sshd_confi
 
 ADD start.sh /usr/local/bin/start.sh
 RUN chmod 777 /usr/local/bin/start.sh
