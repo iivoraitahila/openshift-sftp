@@ -46,7 +46,6 @@ RUN mkdir /tmp/custom_ssh && chmod 777 /tmp/custom_ssh && \
     echo "Subsystem   sftp    /usr/lib/ssh/sftp-server" >> /tmp/custom_ssh/sshd_config && \
     echo "PidFile /tmp/custom_ssh/sshd.pid" >> /tmp/custom_ssh/sshd_config && \
     echo "Match User sftpuser" >> /tmp/custom_ssh/sshd_config && \
-    echo "    ChrootDirectory /home/sftpuser/sftp" >> /tmp/custom_ssh/sshd_config && \
     echo "    ForceCommand internal-sftp" >> /tmp/custom_ssh/sshd_config && \
     echo "    PasswordAuthentication no" >> /tmp/custom_ssh/sshd_config && \
     echo "    PubkeyAuthentication yes" >> /tmp/custom_ssh/sshd_config && \
@@ -54,6 +53,7 @@ RUN mkdir /tmp/custom_ssh && chmod 777 /tmp/custom_ssh && \
     echo "    AllowAgentForwarding no" >> /tmp/custom_ssh/sshd_config && \
     echo "    AllowTcpForwarding no" >> /tmp/custom_ssh/sshd_config && \
     echo "    X11Forwarding no" >> /tmp/custom_ssh/sshd_config
+#   echo "    ChrootDirectory /home/sftpuser/sftp" >> /tmp/custom_ssh/sshd_config
 
 ADD start.sh /usr/local/bin/start.sh
 RUN chmod 777 /usr/local/bin/start.sh
