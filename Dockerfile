@@ -15,7 +15,7 @@ RUN apt-get update && \
 RUN useradd -m -d /home/sftpuser -s /usr/sbin/nologin sftpuser && \
     mkdir -p /home/sftpuser/.ssh && \
     chown sftpuser:sftpuser /home/sftpuser/.ssh && \
-    chmod 700 /home/sftpuser/.ssh
+    chmod 744 /home/sftpuser/.ssh
 
 # Copy the public key
 # Ensure you replace 'docker_rsa.pub' with your actual public key file name
