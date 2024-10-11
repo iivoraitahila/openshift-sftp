@@ -14,6 +14,8 @@ RUN apt-get update && \
 # Set up user for SFTP with no shell login
 RUN useradd -m -d /home/sftpuser -s /usr/sbin/nologin -u 1000700000 sftpuser && \
     mkdir -p /home/sftpuser/.ssh && \
+    chown sftpuser:sftpuser /home/sftpuser && \
+    chmod 700 /home/sftpuser && \
     chown sftpuser:sftpuser /home/sftpuser/.ssh && \
     chmod 700 /home/sftpuser/.ssh
 
@@ -26,11 +28,9 @@ RUN chmod 600 /home/sftpuser/.ssh/authorized_keys && \
     chown sftpuser:sftpuser /home/sftpuser/.ssh/authorized_keys
 
 # Create a directory for SFTP that the user will have access to
-RUN mkdir -p /home/sftpuser/sftp/upload && \
-    chown root:root /home/sftpuser /home/sftpuser/sftp && \
-    chmod 777 /home/sftpuser /home/sftpuser/sftp && \
-    chown sftpuser:sftpuser /home/sftpuser/sftp/upload && \
-    chmod 777 /home/sftpuser/sftp/upload
+RUN mkdir -p /home/sftpuser/sftp && \
+    chown sftpuser:sftpuser /home/sftpuser/sftp && \
+    chmod 777 /home/sftpuser/sftp
 
 # Configure SSH for SFTP
 RUN mkdir -p /run/sshd && \
