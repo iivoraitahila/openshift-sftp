@@ -15,7 +15,7 @@ RUN apt-get update && \
 RUN useradd -m -d /home/sftpuser -s /usr/sbin/nologin sftpuser && \
     mkdir -p /home/sftpuser/.ssh && \
     chown sftpuser:sftpuser /home/sftpuser/.ssh && \
-    chmod 744 /home/sftpuser/.ssh
+    chmod 755 /home/sftpuser/.ssh
 
 # Copy the public key
 # Ensure you replace 'docker_rsa.pub' with your actual public key file name
@@ -28,9 +28,9 @@ RUN chmod 644 /home/sftpuser/.ssh/authorized_keys && \
 # Create a directory for SFTP that the user will have access to
 RUN mkdir -p /home/sftpuser/sftp/upload && \
     chown root:root /home/sftpuser /home/sftpuser/sftp && \
-    chmod 766 /home/sftpuser /home/sftpuser/sftp && \
+    chmod 777 /home/sftpuser /home/sftpuser/sftp && \
     chown sftpuser:sftpuser /home/sftpuser/sftp/upload && \
-    chmod 766 /home/sftpuser/sftp/upload
+    chmod 777 /home/sftpuser/sftp/upload
 
 # Configure SSH for SFTP
 RUN mkdir -p /run/sshd && \
