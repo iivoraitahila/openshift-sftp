@@ -1,4 +1,5 @@
 # From: https://medium.com/@tshenolomos/guide-to-creating-an-sftp-server-with-docker-using-ssh-key-ce9bddb77f39
+# And: https://serverfault.com/a/946877
 
 # Use Ubuntu latest as the base image
 FROM ubuntu:latest
@@ -17,7 +18,8 @@ RUN useradd -m -d /home/sftpuser -s /usr/sbin/nologin -u 1000700000 sftpuser && 
     chown sftpuser:sftpuser /home/sftpuser && \
     chmod 700 /home/sftpuser && \
     chown sftpuser:sftpuser /home/sftpuser/.ssh && \
-    chmod 700 /home/sftpuser/.ssh
+    chmod 700 /home/sftpuser/.ssh && \
+    chmod a+r /etc/shadow
 
 # Copy the public key
 # Ensure you replace 'docker_rsa.pub' with your actual public key file name
@@ -31,20 +33,6 @@ RUN chmod 600 /home/sftpuser/.ssh/authorized_keys && \
 RUN mkdir -p /home/sftpuser/sftp && \
     chown sftpuser:sftpuser /home/sftpuser/sftp && \
     chmod 777 /home/sftpuser/sftp
-
-# Configure SSH for SFTP
-RUN mkdir -p /run/sshd && \
-    echo "Match User sftpuser" >> /etc/ssh/sshd_config && \
-    echo "    ChrootDirectory /home/sftpuser/sftp" >> /etc/ssh/sshd_config && \
-    echo "    ForceCommand internal-sftp" >> /etc/ssh/sshd_config && \
-    echo "    PasswordAuthentication no" >> /etc/ssh/sshd_config && \
-    echo "    PubkeyAuthentication yes" >> /etc/ssh/sshd_config && \
-    echo "    PermitTunnel no" >> /etc/ssh/sshd_config && \
-    echo "    AllowAgentForwarding no" >> /etc/ssh/sshd_config && \
-    echo "    AllowTcpForwarding no" >> /etc/ssh/sshd_config && \
-    echo "    X11Forwarding no" >> /etc/ssh/sshd_config
-
-
 
 RUN mkdir /tmp/custom_ssh && chmod 777 /tmp/custom_ssh && \
     echo "Port 2222" > /tmp/custom_ssh/sshd_config && \
@@ -63,7 +51,7 @@ RUN mkdir /tmp/custom_ssh && chmod 777 /tmp/custom_ssh && \
     echo "    PermitTunnel no" >> /tmp/custom_ssh/sshd_config && \
     echo "    AllowAgentForwarding no" >> /tmp/custom_ssh/sshd_config && \
     echo "    AllowTcpForwarding no" >> /tmp/custom_ssh/sshd_config && \
-    echo "    X11Forwarding no" >> /tmp/custom_ssh/sshd_confi
+    echo "    X11Forwarding no" >> /tmp/custom_ssh/sshd_config
 
 ADD start.sh /usr/local/bin/start.sh
 RUN chmod 777 /usr/local/bin/start.sh
