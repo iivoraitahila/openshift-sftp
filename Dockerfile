@@ -18,8 +18,10 @@ RUN useradd -m -d /home/sftpuser -s /usr/sbin/nologin -u 1000700000 sftpuser && 
     chown sftpuser:sftpuser /home/sftpuser && \
     chmod 700 /home/sftpuser && \
     chown sftpuser:sftpuser /home/sftpuser/.ssh && \
-    chmod 700 /home/sftpuser/.ssh && \
-    chmod a+r /etc/shadow && \
+    chmod 700 /home/sftpuser/.ssh
+
+# OpenShift requirements
+RUN chmod a+r /etc/shadow && \
     echo "moi" > /run/motd.dynamic.new && \
     chmod 777 /run/motd.dynamic.new
 
@@ -30,11 +32,6 @@ COPY docker_rsa.pub /home/sftpuser/.ssh/authorized_keys
 # Set permissions for the public key
 RUN chmod 600 /home/sftpuser/.ssh/authorized_keys && \
     chown sftpuser:sftpuser /home/sftpuser/.ssh/authorized_keys
-
-# Create a directory for SFTP that the user will have access to
-RUN mkdir -p /home/sftpuser/sftp && \
-    chown sftpuser:sftpuser /home/sftpuser/sftp && \
-    chmod 777 /home/sftpuser/sftp
 
 RUN mkdir /tmp/custom_ssh && chmod 777 /tmp/custom_ssh && \
     echo "Port 2222" > /tmp/custom_ssh/sshd_config && \
