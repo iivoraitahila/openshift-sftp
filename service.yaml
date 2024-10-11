@@ -1,0 +1,17 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: openshift-sftp-nodeport
+  namespace: sftpkoe
+spec:
+  ports:
+  - name: 2222-tcp
+    nodePort: 32222 
+    port: 2222
+    protocol: TCP
+    targetPort: 2222
+  sessionAffinity: None
+  type: NodePort 
+  selector:
+    app: openshift-sftp
+    deployment: openshift-sftp
