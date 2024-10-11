@@ -12,17 +12,17 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Set up user for SFTP with no shell login
-RUN useradd -m -d /home/sftpuser -s /usr/sbin/nologin sftpuser && \
+RUN useradd -m -d /home/sftpuser -s /usr/sbin/nologin -u 1000700000 sftpuser && \
     mkdir -p /home/sftpuser/.ssh && \
     chown sftpuser:sftpuser /home/sftpuser/.ssh && \
-    chmod 755 /home/sftpuser/.ssh
+    chmod 700 /home/sftpuser/.ssh
 
 # Copy the public key
 # Ensure you replace 'docker_rsa.pub' with your actual public key file name
 COPY docker_rsa.pub /home/sftpuser/.ssh/authorized_keys
 
 # Set permissions for the public key
-RUN chmod 644 /home/sftpuser/.ssh/authorized_keys && \
+RUN chmod 600 /home/sftpuser/.ssh/authorized_keys && \
     chown sftpuser:sftpuser /home/sftpuser/.ssh/authorized_keys
 
 # Create a directory for SFTP that the user will have access to
