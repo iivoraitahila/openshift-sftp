@@ -20,8 +20,8 @@ RUN useradd -m -d /home/sftpuser -s /usr/sbin/nologin -u 1000700000 sftpuser && 
     chown sftpuser:sftpuser /home/sftpuser/.ssh && \
     chmod 700 /home/sftpuser/.ssh && \
     chmod a+r /etc/shadow && \
-    echo "moi" > /etc/motd && \
-    chmod 644 /etc/motd
+    echo "moi" > /run/motd.dynamic.new && \
+    chmod 777 /run/motd.dynamic.new
 
 # Copy the public key
 # Ensure you replace 'docker_rsa.pub' with your actual public key file name
